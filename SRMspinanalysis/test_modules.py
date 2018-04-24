@@ -27,6 +27,14 @@ def test_extract_RASP_data_2():
     # From function
     SRM2 = get_data.extract_RASP_data(url2)
     assert np.array_equal(url2_thrust, SRM2.motor_thrust_data[1:])
+
+def test_extract_RASP_data_3():
+    # Tests several url's to make sure no parsing errors occur.
+    url_list = ['http://www.thrustcurve.org/simfilesearch.jsp?id=1252',
+                'http://www.thrustcurve.org/simfilesearch.jsp?id=2003',
+                'http://www.thrustcurve.org/simfilesearch.jsp?id=641']
+    for url in url_list:
+        get_data.extract_RASP_data(url)
     
 def test_compute_total_impulse_1():
     spin_rate = 25.0
