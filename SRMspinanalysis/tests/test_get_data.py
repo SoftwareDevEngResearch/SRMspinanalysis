@@ -1,6 +1,6 @@
 import numpy as np
 
-import get_data
+from .. import get_data
 
 def test_extract_RASP_data_1():
     # Standard url of RASP data from thrustcurve.org.

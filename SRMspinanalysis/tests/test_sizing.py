@@ -1,4 +1,4 @@
-import sizing
+from .. import sizing
 
 def test_compute_total_impulse_1():
     spin_rate = 25.0
