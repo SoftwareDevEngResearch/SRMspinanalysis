@@ -27,11 +27,11 @@ def extract_RASP_data(url):
     included in the docstring:
 
     Args:
-        url (str): url from thrustcurve.org containing RASP engine data
+        url (str): URL from thrustcurve.org containing RASP engine data.
 
     Returns:
-        SolidRocketMotor: class returned containing motor information and
-        thrust data
+        SolidRocketMotor: Class returned containing motor information and
+        thrust data.
 
     .. _PEP 484:
         https://www.python.org/dev/peps/pep-0484/
@@ -72,10 +72,10 @@ def is_comment(line):
     included in the docstring:
 
     Args:
-        line (str): line from html text
+        line (str): Line from html text.
 
     Returns:
-        bool: whether or not a line is a comment
+        bool: Whether or not a line is a comment.
 
     .. _PEP 484:
         https://www.python.org/dev/peps/pep-0484/
