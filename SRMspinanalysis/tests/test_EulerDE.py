@@ -1,4 +1,5 @@
 from .. import EulerDE
+import numpy as np
 
 def test_compute_moments_1():
     params = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])

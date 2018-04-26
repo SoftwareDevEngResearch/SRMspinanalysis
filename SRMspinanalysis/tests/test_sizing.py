@@ -1,4 +1,5 @@
 from .. import sizing
+import numpy as np
 
 def test_compute_total_impulse_1():
     spin_rate = 25.0
