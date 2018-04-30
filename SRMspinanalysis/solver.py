@@ -61,9 +61,8 @@ def interpolate_thrust_data(t, motor_time_data, motor_thrust_data):
         return interp_thrust(t).item()
 
 def euler_eom(f, t, design_params, SRM1, SRM2):
-    # Update documentation.
-    """Computes moment vector given thrust information from each motor and
-    specific design parameters.
+    """Numerically computes the time derivatives of the specified function variables.
+    To be used for numerical integration.
 
     `PEP 484`_ type annotations are supported. If attribute, parameter, and
     return types are annotated according to `PEP 484`_, they do not need to be

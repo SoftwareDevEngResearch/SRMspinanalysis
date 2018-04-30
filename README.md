@@ -29,11 +29,17 @@ Given a url for RASP engine data from thrustcurve.org, this function parses the 
 #### def is\_comment(line)
 Determines if a string is a RASP file comment. Comments begin with a ';' character.
 
-### EulerDE.py
+### solver.py
 Contains dynamic model and necessary functions to solve equations of motion.
 
 #### def compute\_moments(params, thrust\_motor\_1, thrust\_motor\_2)
 Computes moment vector given thrust information from two oppositely pointed SRM's and a set of design parameters.
+
+#### def interpolate\_thrust\_data(t, motor\_time\_data, motor\_thrust\_data):
+Performs a linear interpolation on motor thrust data and extracts the value at a desired time.
+
+#### def euler\_eom(f, t, design\_params, SRM1, SRM2):
+Numerically computes the time derivatives of the specified function variables. To be used for numerical integration.
 
 ### sizing.py
 Simple module that can be use to size a motor given design constraints.
