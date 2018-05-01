@@ -1,5 +1,8 @@
 import numpy as np
 from scipy.interpolate import interp1d
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+import get_data
 
 def compute_moments(design_params, thrust_motor_1, thrust_motor_2):
     """Computes moment vector given thrust information from each motor and
@@ -26,13 +29,13 @@ def compute_moments(design_params, thrust_motor_1, thrust_motor_2):
     """
     r1, r2, d1, d2, Ixx, Iyy, Izz = design_params
     if (design_params >= 0).all():
-        Mx = 0;
+        Mx = 0.0;
         My = thrust_motor_1*d1 - thrust_motor_2*d2
         Mz = thrust_motor_1*r1 + thrust_motor_2*r2
         moments = np.array([Mx, My, Mz])
+        return moments
     else:
         raise ValueError('All design parameters should be positive values.')
-    return moments
 
 def interpolate_thrust_data(t, motor_time_data, motor_thrust_data):
     """Performs a linear interpolation on motor thrust data and extracts the value
@@ -95,13 +98,64 @@ def euler_eom(f, t, design_params, SRM1, SRM2):
     Mx, My, Mz = moments
     # Differential equations of motion
     wx_dot = (Mx - (Izz - Iyy) * wy * wz) / Ixx
-    wy_dot = (My - (Ixx - Izz) * wz * wx) / Ixx
-    wz_dot = (Mz - (Iyy - Ixx) * wx * wy) / Ixx
-    psi_dot = (wy * np.sin(phi) + wz * np.cos(phi)) * np.sec(theta)
+    wy_dot = (My - (Ixx - Izz) * wz * wx) / Iyy
+    wz_dot = (Mz - (Iyy - Ixx) * wx * wy) / Izz
+    psi_dot = (wy * np.sin(phi) + wz * np.cos(phi)) * 1.0 / np.cos(theta)
     theta_dot = wy * np.cos(phi) - wz * np.sin(phi)
     phi_dot = wx + (wy * np.sin(phi) + wz * np.cos(phi)) * np.tan(theta)
     return np.array([wx_dot, wy_dot, wz_dot, psi_dot, theta_dot, phi_dot])
+
+def integrate_eom(initial_conditions, t_span, design_params, SRM1, SRM2):
+    """Numerically integrates the zero gravity equations of motion.
+
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        initial_conditions (np.array()): Array of initial conditions. Typically set
+        to an array of zeros.
+        t_span (np.array()): Time vector (s) over which to integrate the equations 
+        of motions.
+        design_params (np.array()): Array of design parameters.
+        [r1, r2, d1, d2, Ixx, Iyy, Izz] where r1 and r2 are the radial locations of
+        the solid rocket motors (m), d1 and d2 are the longitudinal locations of the two
+        motors (m), and Ixx, Iyy, and Izz are the interia values (kg-m^2).
+        SRM1 (SolidRocketMotor()): First solid rocket motor organized into a class.
+        SRM2 (SolidRocketMotor()): Second solid rocket motor organized into a class.
+
+    Returns:
+        (np.array()): Numerical solutions for wx, wy, wz, psi, theta, and phi.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
+    return odeint(euler_eom, ic, t, args=(design_params, SRM1, SRM2))
     
-# Add delay function to get_data module?
 # Add a model module to set up design params and solid rocket motors with time delay?
-# Add delay function to SolidRocketMotor class?
+# Need to add tests for euler_eom and integrate_eom.
+
+if __name__ == '__main__':
+    url = 'http://www.thrustcurve.org/simfilesearch.jsp?id=51'
+    ic = np.zeros(6)
+    tend = 10.0
+    t = np.linspace(0,tend,tend/0.01)
+    c1 = 0.45359237     # lb-m to kg
+    c2 = 0.0254         # in to m
+    r1 = 4.5*c2
+    r2 = 4.5*c2
+    d1 = 25.0*c2
+    d2 = 25.0*c2
+    Ixx = 185000.0*c1*c2**2
+    Iyy = 185000.0*c1*c2**2
+    Izz = 3500.0*c1*c2**2
+    design_params = np.array([r1, r2, d1, d2, Ixx, Iyy, Izz])
+    SRM1 = get_data.extract_RASP_data(url)
+    SRM2 = get_data.extract_RASP_data(url)
+    SRM2.motor_time_data = SRM2.motor_time_data + 0.02
+    SRM1.motor_thrust_data = SRM1.motor_thrust_data / 3.0 # I200 have three grains.
+    SRM2.motor_thrust_data = SRM2.motor_thrust_data / 3.0 # I200 have three grains.
+    f = odeint(euler_eom, ic, t, args=(design_params, SRM1, SRM2))
+    plt.plot(t, f[:,4])
+    plt.show()
