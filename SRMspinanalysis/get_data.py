@@ -16,6 +16,13 @@ class SolidRocketMotor():
         self.motor_manufacturer = motor_header_line[6]
         self.motor_time_data = motor_time_data
         self.motor_thrust_data = motor_thrust_data
+        self.motor_number_of_grains = 1.0
+        
+    def add_delay(self, delay):
+        self.motor_time_data += delay
+    
+    def compute_thrust_per_grain(self):
+        return self.motor_thrust_data / self.motor_number_of_grains
 
 def extract_RASP_data(url):
     """Provide this function with a RASP engine url from thrustcurve.org to

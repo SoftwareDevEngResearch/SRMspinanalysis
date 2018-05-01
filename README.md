@@ -23,6 +23,8 @@ Also contains the thrust-time data.
 * thrust vector (N)
 * time vector (s)
 
+Contains function to add an ignition delay to the chosen motor.
+
 #### def extract\_RASP\_data(url)
 Given a url for RASP engine data from thrustcurve.org, this function parses the html and extracts the appropriate data into a SolidRocketMotor class.
 
@@ -42,7 +44,7 @@ Performs a linear interpolation on motor thrust data and extracts the value at a
 Numerically computes the time derivatives of the specified function variables. To be used for numerical integration.
 
 ### sizing.py
-Simple module that can be use to size a motor given design constraints.
+Simple module that can be used to size a motor given design constraints.
 
 #### def compute\_total\_impulse(spin\_rate, roll\_inertia, radial\_distance)
 Computes total impulse required to spin a rocket design (i.e. known roll inertia and radial location of motors) at a desired spin rate.

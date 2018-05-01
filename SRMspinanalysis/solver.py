@@ -3,6 +3,7 @@ from scipy.interpolate import interp1d
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 import get_data
+import model
 
 def compute_moments(design_params, thrust_motor_1, thrust_motor_2):
     """Computes moment vector given thrust information from each motor and
@@ -132,30 +133,51 @@ def integrate_eom(initial_conditions, t_span, design_params, SRM1, SRM2):
 
     """
     return odeint(euler_eom, ic, t, args=(design_params, SRM1, SRM2))
-    
+
+def compute_nutation_angle(theta, phi):
+    """Computes nutation angle of launch vehicle in degrees.
+
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        theta (np.array()): Array of Euler angle theta values (rad).
+        phi (np.array()): Array of Euler angle phi values (rad).
+
+    Returns:
+        (np.array()): Array of nutation angle values (rad).
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
+    nutation_angle = np.arccos(np.multiply(np.cos(theta),np.cos(phi)))
+    return nutation_angle * (180.0 / np.pi)
+
 # Add a model module to set up design params and solid rocket motors with time delay?
-# Need to add tests for euler_eom and integrate_eom.
+# Need to add tests for euler_eom, integrate_eom, compute_nutation_angle.
 
 if __name__ == '__main__':
     url = 'http://www.thrustcurve.org/simfilesearch.jsp?id=51'
     ic = np.zeros(6)
+    tstart = 0.0
     tend = 10.0
-    t = np.linspace(0,tend,tend/0.01)
-    c1 = 0.45359237     # lb-m to kg
-    c2 = 0.0254         # in to m
-    r1 = 4.5*c2
-    r2 = 4.5*c2
-    d1 = 25.0*c2
-    d2 = 25.0*c2
-    Ixx = 185000.0*c1*c2**2
-    Iyy = 185000.0*c1*c2**2
-    Izz = 3500.0*c1*c2**2
-    design_params = np.array([r1, r2, d1, d2, Ixx, Iyy, Izz])
+    dt = 0.01
+    delay = 0.02
+    t = np.linspace(tstart, tend, tend/dt)
+    RocketModel = model.RocketModel()
+    design_params = RocketModel.create_design_params()
     SRM1 = get_data.extract_RASP_data(url)
     SRM2 = get_data.extract_RASP_data(url)
-    SRM2.motor_time_data = SRM2.motor_time_data + 0.02
-    SRM1.motor_thrust_data = SRM1.motor_thrust_data / 3.0 # I200 have three grains.
-    SRM2.motor_thrust_data = SRM2.motor_thrust_data / 3.0 # I200 have three grains.
-    f = odeint(euler_eom, ic, t, args=(design_params, SRM1, SRM2))
-    plt.plot(t, f[:,4])
+    SRM1.motor_number_of_grains = 3.0
+    SRM2.motor_number_of_grains = 3.0
+    SRM2.add_delay(delay)
+    SRM1.motor_thrust_data = SRM1.compute_thrust_per_grain() # I200 have three grains.
+    SRM2.motor_thrust_data = SRM2.compute_thrust_per_grain() # I200 have three grains.
+    f = integrate_eom(ic, t, design_params, SRM1, SRM2)
+    theta = f[:,4]
+    phi = f[:,5]
+    nutation_angle = compute_nutation_angle(theta, phi)
+    plt.plot(t, nutation_angle)
     plt.show()
