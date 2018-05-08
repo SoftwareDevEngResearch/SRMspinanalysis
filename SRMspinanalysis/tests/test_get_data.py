@@ -1,8 +1,6 @@
 import numpy as np
 
-import get_data
-import sizing
-import EulerDE
+from .. import get_data
 
 def test_extract_RASP_data_1():
     # Standard url of RASP data from thrustcurve.org.
@@ -35,30 +33,3 @@ def test_extract_RASP_data_3():
                 'http://www.thrustcurve.org/simfilesearch.jsp?id=641']
     for url in url_list:
         get_data.extract_RASP_data(url)
-    
-def test_compute_total_impulse_1():
-    spin_rate = 25.0
-    roll_inertia = 1.0
-    radial_distance = 0.175
-    # Computed by hand
-    exp = 142.857
-    obs = sizing.compute_total_impulse(spin_rate, roll_inertia, radial_distance)
-    assert np.allclose(exp, obs)
-    
-def test_compute_total_impulse_2():
-    spin_rate = 1.0
-    roll_inertia = 1.0
-    radial_distance = 1.0
-    # Computed by hand
-    exp = 1.0
-    obs = sizing.compute_total_impulse(spin_rate, roll_inertia, radial_distance)
-    assert np.allclose(exp, obs)
-    
-def test_compute_moments_1():
-    params = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
-    thrust_motor_1 = 25.0
-    thrust_motor_2 = 6.0
-    # Computed by hand
-    exp = np.array([0.0, 51.0, 37.0])
-    obs = EulerDE.compute_moments(params, thrust_motor_1, thrust_motor_2)
-    assert np.allclose(exp, obs)

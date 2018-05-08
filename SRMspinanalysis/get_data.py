@@ -16,12 +16,34 @@ class SolidRocketMotor():
         self.motor_manufacturer = motor_header_line[6]
         self.motor_time_data = motor_time_data
         self.motor_thrust_data = motor_thrust_data
+        self.motor_number_of_grains = 1.0
+        
+    def add_delay(self, delay):
+        self.motor_time_data += delay
+    
+    def compute_thrust_per_grain(self):
+        return self.motor_thrust_data / self.motor_number_of_grains
 
 def extract_RASP_data(url):
-    """ This function takes in a specific thrustcurve.org url for a RASP data file 
-        and extracts the desired html text into a list of strings for each line in
-        the data file. This list of strings is then organized into a class providing
-        data that will be used to solve differential equations of motion. """
+    """Provide this function with a RASP engine url from thrustcurve.org to
+    retrieve thrust data and other important motor information in a class via
+    html parsing using BeautifulSoup.
+    
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        url (str): URL from thrustcurve.org containing RASP engine data.
+
+    Returns:
+        SolidRocketMotor: Class returned containing motor information and
+        thrust data.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
     # Opens and reads the raw html
     response = urllib2.urlopen(url)
     raw_html = response.read()
@@ -49,12 +71,21 @@ def extract_RASP_data(url):
     return SolidRocketMotor(motor_header_line, motor_time_data, motor_thrust_data)
     
 def is_comment(line):
-    """ This function simply checks to see if a line in a RASP file is a comment. 
-        Comments begin with a ';' character. Will be used to remove comments from
-        data string. """
-    return line.startswith(';')
+    """This function simply checks to see if a line in a RASP file is a comment. 
+    Comments begin with a ';' character.
     
-"""if __name__ == '__main__':
-    url ='http://www.thrustcurve.org/simfilesearch.jsp?id=641'
-    url2 = 'http://www.thrustcurve.org/simfilesearch.jsp?id=1247'
-    SRM = extract_RASP_data(url2)"""
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        line (str): Line from html text.
+
+    Returns:
+        bool: Whether or not a line is a comment.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
+    return line.startswith(';')

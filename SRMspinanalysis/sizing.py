@@ -1,15 +1,49 @@
 def compute_total_impulse(spin_rate, roll_inertia, radial_distance):
-    """ Computes total impulse required to spin rocket at desired rate.
-        Units are as follows:
-        spin_rate: rad/s
-        roll_inertia: kg-m^2
-        radial_distance: m """
+    """Computes total impulse required to spin rocket at desired rate.
+
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        spin_rate (int, float): Desired roll spin rate in rad/s of launch vehicle
+        for stabilization.
+        roll_inertia (int, float): The roll inertia of the launch vehicle in kg-m^2.
+        radial_distance (int, float): The location of the solid rocket motors radially
+        along the launch vehicle in m.
+
+    Returns:
+        total_impulse (float): The total impulse in N-s required to spin the launch
+        vehicle to the desired rate.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
     if spin_rate <= 0 or roll_inertia <= 0 or radial_distance <= 0:
         raise ValueError('Spin rate, roll inertia, and radial distance must be positive values.')
     total_impulse = roll_inertia*spin_rate/float(radial_distance)
     return total_impulse
     
 def compute_impulse_per_motor(total_impulse):
+    """Computes impulse per motor (set of 2) required to spin rocket at desired rate.
+
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    Args:
+        total_impulse (int, float): Total impulse computed from the compute_total_impulse
+        function (N-s).
+
+    Returns:
+        float: The impulse of a single motor (from a pair) to spin a launch vehicle
+        at a particular spin rate.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
     if total_impulse <= 0:
         raise ValueError('Total impulse must be a positive value.')
     return total_impulse/2.0
