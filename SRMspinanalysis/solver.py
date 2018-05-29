@@ -158,4 +158,4 @@ if __name__ == '__main__':
     wx, wy, wz, psi, theta, phi = integrate_eom(ic, t, design_params, SRM1, SRM2).T
     nutation_angle = compute_nutation_angle(theta, phi)
     precession_angle = compute_precession_angle(theta, psi)
-    plot.plot_all(t, psi, theta, phi, nutation_angle, precession_angle)
+    #plot.plot_all(t, psi, theta, phi, nutation_angle, precession_angle)
