@@ -5,8 +5,9 @@ import urllib2
 import numpy as np
 import re
 
-class SolidRocketMotor():
-    def __init__(self, motor_header_line, motor_time_data, motor_thrust_data):
+class SolidRocketMotor(object):
+    def __init__(self, url):
+        (motor_header_line, motor_time_data, motor_thrust_data) = extract_RASP_data(url)
         self.motor_name = motor_header_line[0]
         self.motor_diameter = motor_header_line[1]
         self.motor_length = motor_header_line[2]
@@ -19,9 +20,15 @@ class SolidRocketMotor():
         self.motor_number_of_grains = 1.0
         
     def add_delay(self, delay):
+        """ Adds a time delay for ignition for a solid rocket motor. Time delay is in seconds.
+        """
         self.motor_time_data += delay
     
     def compute_thrust_per_grain(self):
+        """ Computes the thrust per grain. This is used for motors that are
+            manufactured as multiple grains. Assign SolidRocketMotor.motor_number_of_grains
+            a value before using this function.
+        """
         return self.motor_thrust_data / self.motor_number_of_grains
 
 def extract_RASP_data(url):
@@ -29,19 +36,13 @@ def extract_RASP_data(url):
     retrieve thrust data and other important motor information in a class via
     html parsing using BeautifulSoup.
     
-    `PEP 484`_ type annotations are supported. If attribute, parameter, and
-    return types are annotated according to `PEP 484`_, they do not need to be
-    included in the docstring:
-
     Args:
         url (str): URL from thrustcurve.org containing RASP engine data.
 
     Returns:
-        SolidRocketMotor: Class returned containing motor information and
-        thrust data.
-
-    .. _PEP 484:
-        https://www.python.org/dev/peps/pep-0484/
+        motor_header_line (list): List of strings containing motor information.
+        motor_time_data (np.array()): Time vector for thrust data.
+        motor_thrust_data (np.array()): Thrust time profile for a particular motor.
 
     """
     # Opens and reads the raw html
@@ -68,24 +69,17 @@ def extract_RASP_data(url):
     for index, data_point in enumerate(RASP_raw_thrust_time_data, 1):
         motor_time_data[index] = float(data_point[0])
         motor_thrust_data[index] = float(data_point[1])
-    return SolidRocketMotor(motor_header_line, motor_time_data, motor_thrust_data)
+    return (motor_header_line, motor_time_data, motor_thrust_data)
     
 def is_comment(line):
     """This function simply checks to see if a line in a RASP file is a comment. 
     Comments begin with a ';' character.
-    
-    `PEP 484`_ type annotations are supported. If attribute, parameter, and
-    return types are annotated according to `PEP 484`_, they do not need to be
-    included in the docstring:
 
     Args:
         line (str): Line from html text.
 
     Returns:
         bool: Whether or not a line is a comment.
-
-    .. _PEP 484:
-        https://www.python.org/dev/peps/pep-0484/
 
     """
     return line.startswith(';')

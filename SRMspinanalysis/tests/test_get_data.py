@@ -11,7 +11,7 @@ def test_extract_RASP_data_1():
                           0.173, 0.187, 0.194, 0.197, 0.202, 0.206, 0.213,
                           0.218, 0.227, 0.236, 0.241, 0.25])
     # From function
-    SRM1 = get_data.extract_RASP_data(url1)
+    SRM1 = get_data.SolidRocketMotor(url1)
     assert np.array_equal(url1_time, SRM1.motor_time_data[1:])
     
 def test_extract_RASP_data_2():
@@ -23,7 +23,7 @@ def test_extract_RASP_data_2():
                             25.125, 21.729, 16.980, 12.682, 7.471, 3.169,
                             1.584, 0.679, 0.000])
     # From function
-    SRM2 = get_data.extract_RASP_data(url2)
+    SRM2 = get_data.SolidRocketMotor(url2)
     assert np.array_equal(url2_thrust, SRM2.motor_thrust_data[1:])
 
 def test_extract_RASP_data_3():
