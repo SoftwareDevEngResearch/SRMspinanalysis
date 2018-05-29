@@ -6,7 +6,27 @@ import numpy as np
 import re
 
 class SolidRocketMotor(object):
+    """Solid rocket motors use solid propllant to produce thrust.
+
+    Attributes
+    ----------
+    motor_name : Name of motor
+    motor_diameter : Diameter of motor [mm]
+    motor_length : Length of motor [mm]
+    motor_delays : Delays of motor
+    motor_propellant_weight : Mass of propellant [kg]
+    motor_total_weight : Mass of propellant and casing [kg]
+    motor_manufacturer : Manufacturer of the motor
+    motor_time_data : Time vector for thrust curve [s]
+    motor_thrust_data : Thrust vector time profile [N]
+    motor_number_of_grains : Number of propllant grains in motor
+    
+    """
+    
     def __init__(self, url):
+        """Initializes the solid rocket motor with information from a desired
+        thrustcurve.org url.
+        """
         (motor_header_line, motor_time_data, motor_thrust_data) = extract_RASP_data(url)
         self.motor_name = motor_header_line[0]
         self.motor_diameter = motor_header_line[1]

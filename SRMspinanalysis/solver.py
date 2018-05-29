@@ -159,6 +159,3 @@ if __name__ == '__main__':
     nutation_angle = compute_nutation_angle(theta, phi)
     precession_angle = compute_precession_angle(theta, psi)
     plot.plot_all(t, psi, theta, phi, nutation_angle, precession_angle)
-    #plt.plot(t, nutation_angle)
-    #plt.plot(np.multiply(nutation_angle, np.cos(precession_angle)), np.multiply(nutation_angle, np.sin(precession_angle)))
-    #plt.show()
