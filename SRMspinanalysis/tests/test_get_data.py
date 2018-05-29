@@ -1,5 +1,4 @@
 import numpy as np
-
 from .. import get_data
 
 def test_extract_RASP_data_1():

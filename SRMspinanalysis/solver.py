@@ -4,6 +4,7 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 import get_data
 import model
+import plot
 
 def compute_moments(design_params, thrust_motor_1, thrust_motor_2):
     """Computes moment vector given thrust information from each motor and
@@ -155,11 +156,9 @@ if __name__ == '__main__':
     SRM1.motor_thrust_data = SRM1.compute_thrust_per_grain() # I200 have three grains.
     SRM2.motor_thrust_data = SRM2.compute_thrust_per_grain() # I200 have three grains.
     wx, wy, wz, psi, theta, phi = integrate_eom(ic, t, design_params, SRM1, SRM2).T
-    #print f
-    #theta = f[:,4]
-    #phi = f[:,5]
     nutation_angle = compute_nutation_angle(theta, phi)
     precession_angle = compute_precession_angle(theta, psi)
+    plot.plot_all(t, psi, theta, phi, nutation_angle, precession_angle)
     #plt.plot(t, nutation_angle)
-    plt.plot(np.multiply(nutation_angle, np.cos(precession_angle)), np.multiply(nutation_angle, np.sin(precession_angle)))
-    plt.show()
+    #plt.plot(np.multiply(nutation_angle, np.cos(precession_angle)), np.multiply(nutation_angle, np.sin(precession_angle)))
+    #plt.show()

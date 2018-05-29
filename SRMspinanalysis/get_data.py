@@ -33,7 +33,7 @@ class SolidRocketMotor(object):
 
 def extract_RASP_data(url):
     """Provide this function with a RASP engine url from thrustcurve.org to
-    retrieve thrust data and other important motor information in a class via
+    retrieve thrust data and other important motor information via
     html parsing using BeautifulSoup.
     
     Args:
