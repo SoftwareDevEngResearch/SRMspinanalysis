@@ -58,7 +58,7 @@ class RocketModel(object):
         self.nutation_angle = solver.compute_nutation_angle(self.theta, self.phi)
         self.precession_angle = solver.compute_precession_angle(self.theta, self.psi)
     
-    def plot(self, euler_angles=True, nutation_angle=True, longitudinal_axis=True, show_plot=True, save_plot=True, filepath=os.path.join(os.path.expanduser('~'), 'SpinFigures'), filenames=['Euler.png', 'Nut.png', 'Axis.png']):
+    def plot(self, euler_angles=True, nutation_angle=True, longitudinal_axis=True, show_plot=False, save_plot=True, filepath=os.path.join(os.path.expanduser('~'), 'SpinFigures'), filenames=['Euler.png', 'Nut.png', 'Axis.png']):
         """Plots figures and saves them to file by default. All arguments are optional and can be changed if necessary.
         """
         if euler_angles:
