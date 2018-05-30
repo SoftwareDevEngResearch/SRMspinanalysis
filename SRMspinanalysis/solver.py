@@ -105,7 +105,7 @@ def integrate_eom(initial_conditions, t_span, design_params, SRM1, SRM2):
         (np.array()): Numerical solutions for wx, wy, wz, psi, theta, and phi.
 
     """
-    return odeint(euler_eom, ic, t, args=(design_params, SRM1, SRM2))
+    return odeint(euler_eom, initial_conditions, t_span, args=(design_params, SRM1, SRM2))
 
 def compute_nutation_angle(theta, phi):
     """Computes nutation angle of launch vehicle in degrees.
@@ -135,7 +135,6 @@ def compute_precession_angle(theta, psi):
     precession_angle = np.arccos(np.multiply(np.cos(theta),np.cos(psi)))
     return precession_angle * (180.0 / np.pi)
 
-# Add a model module to set up design params and solid rocket motors with time delay?
 # Need to add tests for euler_eom, integrate_eom, compute_nutation_angle, compute_precession_angle.
 
 if __name__ == '__main__':
@@ -147,15 +146,17 @@ if __name__ == '__main__':
     delay = 0.02
     t = np.linspace(tstart, tend, tend/dt)
     RocketModel = model.RocketModel()
-    design_params = RocketModel.create_design_params()
-    SRM1 = get_data.SolidRocketMotor(url)
-    SRM2 = get_data.SolidRocketMotor(url)
-    SRM1.motor_number_of_grains = 3.0
-    SRM2.motor_number_of_grains = 3.0
-    SRM2.add_delay(delay)
-    SRM1.motor_thrust_data = SRM1.compute_thrust_per_grain() # I200 have three grains.
-    SRM2.motor_thrust_data = SRM2.compute_thrust_per_grain() # I200 have three grains.
-    wx, wy, wz, psi, theta, phi = integrate_eom(ic, t, design_params, SRM1, SRM2).T
-    nutation_angle = compute_nutation_angle(theta, phi)
-    precession_angle = compute_precession_angle(theta, psi)
-    #plot.plot_all(t, psi, theta, phi, nutation_angle, precession_angle)
+    RocketModel.create_design_params()
+    RocketModel.select_SRM(url)
+    #SRM1 = get_data.SolidRocketMotor(url)
+    #SRM2 = get_data.SolidRocketMotor(url)
+    RocketModel.SRM1.motor_number_of_grains = 3.0
+    RocketModel.SRM2.motor_number_of_grains = 3.0
+    RocketModel.SRM2.add_delay(delay)
+    RocketModel.SRM1.motor_thrust_data = RocketModel.SRM1.compute_thrust_per_grain() # I200 have three grains.
+    RocketModel.SRM2.motor_thrust_data = RocketModel.SRM2.compute_thrust_per_grain() # I200 have three grains.
+    RocketModel.solve_eom(tend)
+    #wx, wy, wz, psi, theta, phi = integrate_eom(ic, t, RocketModel.design_params, RocketModel.SRM1, RocketModel.SRM2).T
+    #nutation_angle = compute_nutation_angle(RocketModel.theta, RocketModel.phi)
+    #precession_angle = compute_precession_angle(RocketModel.theta, RocketModel.psi)
+    RocketModel.plot()

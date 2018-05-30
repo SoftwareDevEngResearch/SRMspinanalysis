@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_Euler_angles(t, psi, theta, phi, title='Eulerian Angle Time Profiles', xlabel='Time (s)'):
+def plot_euler_angles(t, psi, theta, phi, title='Eulerian Angle Time Profiles', xlabel='Time (s)'):
     """Plots Euler angle time profiles of launch vehicle in degrees.
 
     Args:
@@ -74,7 +74,16 @@ def plot_all(t, psi, theta, phi, nutation_angle, precession_angle):
         precession_angle (np.array()): Array of precession angle values (rad).
 
     """
-    plot_Euler_angles(t, psi, theta, phi)
+    plot_euler_angles(t, psi, theta, phi)
     plot_nutation_angle(t, nutation_angle)
     plot_longitudinal_axis(t, nutation_angle, precession_angle)
+    
+def show_plot():
+    """Displays plots to screen.
+    """
     plt.show()
+    
+def save_plot(filename):
+    """Saves plot to a .png file.
+    """
+    plt.savefig(filename)
