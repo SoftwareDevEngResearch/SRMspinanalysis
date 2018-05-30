@@ -14,4 +14,3 @@ def test_RocketModel():
     RocketModel.SRM1.motor_thrust_data = RocketModel.SRM1.compute_thrust_per_grain() # I200 have three grains.
     RocketModel.SRM2.motor_thrust_data = RocketModel.SRM2.compute_thrust_per_grain() # I200 have three grains.
     RocketModel.solve_eom(tend)
-    RocketModel.plot()
