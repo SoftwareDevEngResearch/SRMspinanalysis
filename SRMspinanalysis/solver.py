@@ -1,10 +1,6 @@
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.integrate import odeint
-import matplotlib.pyplot as plt
-import get_data
-import model
-import plot
 
 def compute_moments(design_params, thrust_motor_1, thrust_motor_2):
     """Computes moment vector given thrust information from each motor and
@@ -134,29 +130,3 @@ def compute_precession_angle(theta, psi):
     """
     precession_angle = np.arccos(np.multiply(np.cos(theta),np.cos(psi)))
     return precession_angle * (180.0 / np.pi)
-
-# Need to add tests for euler_eom, integrate_eom, compute_nutation_angle, compute_precession_angle.
-
-if __name__ == '__main__':
-    url = 'http://www.thrustcurve.org/simfilesearch.jsp?id=51'
-    ic = np.zeros(6)
-    tstart = 0.0
-    tend = 7.0
-    dt = 0.0001
-    delay = 0.02
-    t = np.linspace(tstart, tend, tend/dt)
-    RocketModel = model.RocketModel()
-    RocketModel.create_design_params()
-    RocketModel.select_SRM(url)
-    #SRM1 = get_data.SolidRocketMotor(url)
-    #SRM2 = get_data.SolidRocketMotor(url)
-    RocketModel.SRM1.motor_number_of_grains = 3.0
-    RocketModel.SRM2.motor_number_of_grains = 3.0
-    RocketModel.SRM2.add_delay(delay)
-    RocketModel.SRM1.motor_thrust_data = RocketModel.SRM1.compute_thrust_per_grain() # I200 have three grains.
-    RocketModel.SRM2.motor_thrust_data = RocketModel.SRM2.compute_thrust_per_grain() # I200 have three grains.
-    RocketModel.solve_eom(tend)
-    #wx, wy, wz, psi, theta, phi = integrate_eom(ic, t, RocketModel.design_params, RocketModel.SRM1, RocketModel.SRM2).T
-    #nutation_angle = compute_nutation_angle(RocketModel.theta, RocketModel.phi)
-    #precession_angle = compute_precession_angle(RocketModel.theta, RocketModel.psi)
-    RocketModel.plot()
