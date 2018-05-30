@@ -1,10 +1,6 @@
 def compute_total_impulse(spin_rate, roll_inertia, radial_distance):
     """Computes total impulse required to spin rocket at desired rate.
 
-    `PEP 484`_ type annotations are supported. If attribute, parameter, and
-    return types are annotated according to `PEP 484`_, they do not need to be
-    included in the docstring:
-
     Args:
         spin_rate (int, float): Desired roll spin rate in rad/s of launch vehicle
         for stabilization.
@@ -16,9 +12,6 @@ def compute_total_impulse(spin_rate, roll_inertia, radial_distance):
         total_impulse (float): The total impulse in N-s required to spin the launch
         vehicle to the desired rate.
 
-    .. _PEP 484:
-        https://www.python.org/dev/peps/pep-0484/
-
     """
     if spin_rate <= 0 or roll_inertia <= 0 or radial_distance <= 0:
         raise ValueError('Spin rate, roll inertia, and radial distance must be positive values.')
@@ -27,21 +20,14 @@ def compute_total_impulse(spin_rate, roll_inertia, radial_distance):
     
 def compute_impulse_per_motor(total_impulse):
     """Computes impulse per motor (set of 2) required to spin rocket at desired rate.
-
-    `PEP 484`_ type annotations are supported. If attribute, parameter, and
-    return types are annotated according to `PEP 484`_, they do not need to be
-    included in the docstring:
-
+    
     Args:
         total_impulse (int, float): Total impulse computed from the compute_total_impulse
         function (N-s).
 
     Returns:
-        float: The impulse of a single motor (from a pair) to spin a launch vehicle
+        (float): The impulse of a single motor (from a pair) to spin a launch vehicle
         at a particular spin rate.
-
-    .. _PEP 484:
-        https://www.python.org/dev/peps/pep-0484/
 
     """
     if total_impulse <= 0:
